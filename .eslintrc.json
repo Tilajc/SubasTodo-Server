@@ -7,22 +7,19 @@
     "extends": ["eslint:recommended", "plugin:prettier/recommended", "eslint-config-prettier"],
     "parserOptions": {
       "ecmaFeatures": {
-        "jsx": true
+
       },
       "ecmaVersion": 12,
       "sourceType": "module"
     },
-    "plugins": ["react"],
     "rules": {
       "semi": [2, "always"],
-      "react/react-in-jsx-scope": "off",
       "prettier/prettier": [
         "error",
         {
           "endOfLine": "auto"
         }
-      ],
-      "react/prop-types": 0
+      ]
     }
   }
   
