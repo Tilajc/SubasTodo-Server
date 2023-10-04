@@ -1,9 +1,8 @@
-import mongoose from 'mongoose';
-const { Schema } = mongoose;
+import mongoose, { Schema } from 'mongoose';
 
 const bidSchema = new Schema({
-  bidOwner: { type: String }, // {type: Schema.Types.ObjectId, ref: User}
-  product: { type: String }, // {type: Schema.Types.ObjectId, ref: Product}
+  bidOwner: { type: String, required: true }, // {type: Schema.Types.ObjectId, ref: User}
+  product: { type: String, required: true }, // {type: Schema.Types.ObjectId, ref: Product}
   bidWinner: { type: String, default: 'Anyone' }, // {type: Schema.Types.ObjectId, ref: User}
   bestOffer: { type: Number, required: true },
   finished: { type: Boolean, default: false },
