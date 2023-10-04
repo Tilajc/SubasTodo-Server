@@ -1,41 +1,41 @@
 import mongoose, { Schema } from 'mongoose';
 
 const userSchema = new Schema({
-  id: {
-    type: String,
-    require: true
-  },
   profilePhoto: {
     type: String,
-    require: true
+    required: true
   },
   name: {
     type: String,
-    require: true
+    required: true
   },
   lastName: {
     type: String,
-    require: true
+    required: true
   },
   city: {
     type: String,
-    require: true
+    required: true
+  },
+  dni: {
+    type: String,
+    required: true
   },
   phone: {
     type: Number,
-    require: true
+    required: true
   },
   birthDate: {
     type: String,
-    require: true
+    required: true
   },
   email: {
     type: String,
-    require: true
+    required: true
   },
   password: {
     type: String,
-    require: true
+    required: true
   }
 });
 

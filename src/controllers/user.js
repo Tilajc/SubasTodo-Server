@@ -52,7 +52,7 @@ const getAllUsersById = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-  const { id, firstName, lastName, email, city, profilePhoto, phone, birthDate, password } =
+  const { firstName, lastName, dni, email, city, profilePhoto, phone, birthDate, password } =
     req.body;
   try {
     const emailExists = User.findOne();
@@ -64,10 +64,10 @@ const createUser = async (req, res) => {
       });
     }
     const newUser = User.create({
-      id,
       profilePhoto,
       firstName,
       lastName,
+      dni,
       phone,
       birthDate,
       email,
@@ -91,7 +91,8 @@ const createUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { firstName, lastName, email, city, profilePhoto, phone, birthDate, password } = req.body;
+  const { firstName, lastName, dni, email, city, profilePhoto, phone, birthDate, password } =
+    req.body;
 
   if (!mongoose.isValidObjectId(id)) {
     return res.status(400).json({
@@ -146,6 +147,7 @@ const updateUser = async (req, res) => {
       {
         firstName,
         lastName,
+        dni,
         email,
         city,
         profilePhoto,
