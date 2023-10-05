@@ -55,15 +55,15 @@ const createUser = async (req, res) => {
   const { firstName, lastName, dni, email, city, profilePhoto, phone, birthDate, password } =
     req.body;
   try {
-    const emailExists = User.findOne();
+    const emailExists = await User.findOne({ email });
     if (emailExists) {
       return res.status(400).json({
-        message: `A user with ${emailExists} already exists`,
+        message: `A user with ${emailExists.email} already exists`,
         data: undefined,
         error: true
       });
     }
-    const newUser = User.create({
+    const newUser = await User.create({
       profilePhoto,
       firstName,
       lastName,
@@ -129,6 +129,9 @@ const updateUser = async (req, res) => {
     const userWithExistentEmail = await User.findOne({
       $and: [
         {
+          $or: [{ email }]
+        },
+        {
           _id: { $ne: id }
         }
       ]
@@ -137,7 +140,7 @@ const updateUser = async (req, res) => {
     if (userWithExistentEmail) {
       return res.status(400).json({
         message: 'There is another user with that email.',
-        data: req.body,
+        data: undefined,
         error: true
       });
     }

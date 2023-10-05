@@ -5,7 +5,7 @@ const userSchema = new Schema({
     type: String,
     required: true
   },
-  name: {
+  firstName: {
     type: String,
     required: true
   },
@@ -18,7 +18,7 @@ const userSchema = new Schema({
     required: true
   },
   dni: {
-    type: String,
+    type: Number,
     required: true
   },
   phone: {

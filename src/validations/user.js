@@ -1,5 +1,8 @@
 import Joi from 'joi';
 
+const RGXEmail = /^[^@]+@[^@]+\.[a-zA-Z]{2,}$/;
+const RGXPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
 const userValidateCreation = (req, res, next) => {
   const userCreation = Joi.object({
     firstName: Joi.string()
@@ -52,7 +55,17 @@ const userValidateCreation = (req, res, next) => {
         'string.pattern.base': 'City must contain letters and spaces only',
         'string.empty': 'City can´t be empty',
         'string.min': 'City must have at least 4 characters'
-      })
+      }),
+    email: Joi.string().regex(RGXEmail).required().messages({
+      'string.empty': 'Email can´t be empty',
+      'string.pattern.base': 'Email must be in a valid format'
+    }),
+    password: Joi.string().min(8).regex(RGXPassword).required().messages({
+      'string.pattern.base':
+        'Password must contain at least one uppercase letter, one lowercase letter, and one digit',
+      'string.empty': 'Password can´t be empty',
+      'string.min': 'Password must be at least 8 characters long'
+    })
   });
 
   const validationResult = userCreation.validate(req.body);
@@ -115,7 +128,17 @@ const userValidateUpdate = (req, res, next) => {
         'string.pattern.base': 'City must contain letters and spaces only',
         'string.empty': 'City can´t be empty',
         'string.min': 'City must have at least 4 characters'
-      })
+      }),
+    email: Joi.string().regex(RGXEmail).required().messages({
+      'string.empty': 'Email can´t be empty',
+      'string.pattern.base': 'Email must be in a valid format'
+    }),
+    password: Joi.string().min(8).regex(RGXPassword).required().messages({
+      'string.pattern.base':
+        'Password must contain at least one uppercase letter, one lowercase letter, and one digit',
+      'string.empty': 'Password can´t be empty',
+      'string.min': 'Password must be at least 8 characters long'
+    })
   });
 
   const validationResult = userUpdate.validate(req.body);
