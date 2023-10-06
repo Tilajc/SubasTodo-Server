@@ -101,6 +101,13 @@ const updateUser = async (req, res) => {
   const { firstName, lastName, dni, email, city, profilePhoto, phone, birthDate, password } =
     req.body;
 
+  const tFirstName = firstName.trim();
+  const tLastName = lastName.trim();
+  const tEmail = email.trim();
+  const tCity = city.trim();
+  const tBirthDate = birthDate.trim();
+  const tPassword = password.trim();
+
   if (!mongoose.isValidObjectId(id)) {
     return res.status(400).json({
       message: 'ID invalid',
@@ -155,15 +162,15 @@ const updateUser = async (req, res) => {
     const updateNewUser = await User.findByIdAndUpdate(
       id,
       {
-        firstName,
-        lastName,
-        dni,
-        email,
-        city,
         profilePhoto,
+        firstName: tFirstName,
+        lastName: tLastName,
+        dni,
         phone,
-        birthDate,
-        password
+        birthDate: tBirthDate,
+        email: tEmail,
+        city: tCity,
+        password: tPassword
       },
       { new: true }
     );
