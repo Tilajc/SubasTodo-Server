@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-const RGXEmail = /^[^@]+@[^@]+\.[a-zA-Z]{2,}$/;
+const RGXEmail = /^[^@]+@[^@]+\.[a-zA-Z\s]{2,}$/;
 const RGXPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
 const userValidateCreation = (req, res, next) => {
@@ -8,7 +8,7 @@ const userValidateCreation = (req, res, next) => {
     firstName: Joi.string()
       .min(3)
       .max(25)
-      .pattern(/^[a-zA-Z-]+$/)
+      .pattern(/^[A-Za-z\s]+$/)
       .required()
       .messages({
         'string.pattern.base': 'First name must contain letters only',
@@ -19,7 +19,7 @@ const userValidateCreation = (req, res, next) => {
     lastName: Joi.string()
       .min(3)
       .max(25)
-      .pattern(/^[a-zA-Z-]+$/)
+      .pattern(/^[A-Za-z\s]+$/)
       .required()
       .messages({
         'string.pattern.base': 'First name must contain letters only',
@@ -85,7 +85,7 @@ const userValidateUpdate = (req, res, next) => {
     firstName: Joi.string()
       .min(3)
       .max(25)
-      .pattern(/^[a-zA-Z-]+$/)
+      .pattern(/^[A-Za-z\s]+$/)
       .messages({
         'string.pattern.base': 'First name must contain letters only',
         'string.min': 'First name can´t be shorter than 3 characters',
@@ -95,7 +95,7 @@ const userValidateUpdate = (req, res, next) => {
     lastName: Joi.string()
       .min(3)
       .max(25)
-      .pattern(/^[a-zA-Z-]+$/)
+      .pattern(/^[A-Za-z\s]+$/)
       .messages({
         'string.pattern.base': 'First name must contain letters only',
         'string.min': 'First name can´t be shorter than 3 characters',

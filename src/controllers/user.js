@@ -54,29 +54,36 @@ const getAllUsersById = async (req, res) => {
 const createUser = async (req, res) => {
   const { firstName, lastName, dni, email, city, profilePhoto, phone, birthDate, password } =
     req.body;
+  const tFirstName = firstName.trim();
+  const tLastName = lastName.trim();
+  const tEmail = email.trim();
+  const tCity = city.trim();
+  const tBirthDate = birthDate.trim();
+  const tPassword = password.trim();
+
   try {
     const emailExists = await User.findOne({ email });
     if (emailExists) {
       return res.status(400).json({
-        message: `A user with ${emailExists.email} already exists`,
+        message: `A user with ${email} already exists`,
         data: undefined,
         error: true
       });
     }
     const newUser = await User.create({
       profilePhoto,
-      firstName,
-      lastName,
+      firstName: tFirstName,
+      lastName: tLastName,
       dni,
       phone,
-      birthDate,
-      email,
-      city,
-      password
+      birthDate: tBirthDate,
+      email: tEmail,
+      city: tCity,
+      password: tPassword
     });
 
     return res.status(201).json({
-      message: `${firstName} ${lastName} was succesfully created`,
+      message: `${tFirstName} ${tLastName} was succesfully created`,
       data: newUser,
       error: false
     });
