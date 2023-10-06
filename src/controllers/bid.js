@@ -40,6 +40,13 @@ const getBidById = async (req, res) => {
   }
 };
 
+/* const createBid = async (req, res) => {
+  const { bidOwner, product, bidWinner, bestOffer, finished, questions } = req.body;
+
+  try {
+  } catch (error) {}
+}; */
+
 const bidController = {
   getAllBids,
   getBidById
