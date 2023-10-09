@@ -123,6 +123,8 @@ const updateBid = async (req, res) => {
       });
     }
 
+    // add "you can't bid two times in arrow!"
+
     if (actualBid.price >= price) {
       return res.status(400).json({
         message: 'You cannot bid equal or less than the actual price!',
@@ -156,11 +158,50 @@ const updateBid = async (req, res) => {
   }
 };
 
+const deleteBid = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).json({
+      message: 'Invalid ID',
+      data: undefined,
+      error: true
+    });
+  }
+
+  try {
+    const actualBid = await Bid.findById(id);
+
+    if (!actualBid) {
+      return res.status(400).json({
+        message: `The bid with the ID: ${id} doesn't exists`,
+        data: undefined,
+        error: true
+      });
+    }
+
+    const deletedBid = await Bid.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      message: 'Bid deleted successfully!',
+      data: deletedBid,
+      error: false
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: `An error ocurred: ${error}`,
+      data: undefined,
+      error: true
+    });
+  }
+};
+
 const bidController = {
   getAllBids,
   getBidById,
   createBid,
-  updateBid
+  updateBid,
+  deleteBid
 };
 
 export default bidController;
