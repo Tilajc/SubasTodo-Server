@@ -1,12 +1,19 @@
 import mongoose, { Schema } from 'mongoose';
 
 const bidSchema = new Schema({
-  bidOwner: { type: String, required: true }, // {type: Schema.Types.ObjectId, ref: User}
-  product: { type: String, required: true }, // {type: Schema.Types.ObjectId, ref: Product}
-  bidWinner: { type: String, default: null }, // {type: Schema.Types.ObjectId, ref: User}
+  bidOwner: { type: Schema.Types.ObjectId, ref: 'User' },
+  product: {
+    name: { type: String, required: true },
+    description: { type: String, required: true },
+    photo: { type: String, required: true }
+  },
+  timeLimit: { type: Number, required: true },
+  bidWinner: { type: Schema.Types.ObjectId, ref: 'User' },
   price: { type: Number, required: true },
+  startDate: { type: Date },
+  expirationDate: { type: Date },
   finished: { type: Boolean, default: false },
-  questions: { type: [String] }
+  questions: [{ type: Schema.Types.ObjectId, ref: 'Question' }]
 });
 
 export default mongoose.model('Bid', bidSchema);

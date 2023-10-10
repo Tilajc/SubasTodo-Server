@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
+import { addDays } from 'date-fns';
 import Bid from '../models/Bid';
+import User from '../models/User';
 
 const getAllBids = async (req, res) => {
   try {
@@ -54,16 +56,45 @@ const getBidById = async (req, res) => {
 };
 
 const createBid = async (req, res) => {
-  const { bidOwner, product, bidWinner, price, finished, questions } = req.body;
+  const { bidOwner, product, timeLimit, price } = req.body;
+
+  if (!mongoose.isValidObjectId(bidOwner)) {
+    return res.status(400).json({
+      message: 'invalid bidOwner ID',
+      data: undefined,
+      error: true
+    });
+  }
 
   try {
+    const validBidOwner = await User.findById(bidOwner);
+
+    if (!validBidOwner) {
+      return res.status(400).json({
+        message: 'Cannot find the owner user',
+        data: undefined,
+        error: true
+      });
+    }
+
+    if (timeLimit < 2 || timeLimit > 30) {
+      return res.status(400).json({
+        message: 'The time limit of a bid must be between two days and thirty days',
+        data: undefined,
+        error: true
+      });
+    }
+
+    const startDate = new Date();
+    const expirationDate = addDays(startDate, timeLimit);
+
     const newBid = await Bid.create({
       bidOwner,
       product,
-      bidWinner,
+      timeLimit,
       price,
-      finished,
-      questions
+      startDate,
+      expirationDate
     });
 
     return res.status(201).json({
@@ -93,6 +124,14 @@ const updateBid = async (req, res) => {
 
   const { bidWinner, price, finished, questions } = req.body;
 
+  /* if (!mongoose.isValidObjectId(bidWinner)) {
+    return res.status(400).json({
+      message: 'invalid bidWinner ID',
+      data: undefined,
+      error: true
+    });
+  } */
+
   try {
     const actualBid = await Bid.findById(id);
 
@@ -104,7 +143,45 @@ const updateBid = async (req, res) => {
       });
     }
 
-    const bidProperties = Object.keys(actualBid.toObject()).slice(1, -1);
+    const validWinner = await User.findById(bidWinner);
+
+    if (!validWinner) {
+      return res.status(404).json({
+        message: `The bidWinner with the ID: ${bidWinner} doesn't exists`,
+        data: undefined,
+        error: true
+      });
+    }
+
+    if (bidWinner === actualBid.bidOwner) {
+      return res.status(400).json({
+        message: `You cannot bid in your own bid!`,
+        data: undefined,
+        error: true
+      });
+    }
+
+    // add "you can't bid two times in arrow!"
+    /* console.log('bidWinner', bidWinner);
+    console.log('actualBid.bidWinner', actualBid.bidWinner);
+
+    if (actualBid.bidWinner === bidWinner) {
+      return res.status(400).json({
+        message: 'you cannot bid two times in arrow!',
+        data: undefined,
+        error: false
+      });
+    } */
+
+    if (actualBid.price >= price) {
+      return res.status(400).json({
+        message: 'You cannot bid equal or less than the actual price!',
+        data: undefined,
+        error: true
+      });
+    }
+
+    /* const bidProperties = Object.keys(actualBid.toObject()).slice(1, -1);
     let changes = false;
     bidProperties.forEach((property) => {
       if (
@@ -121,17 +198,7 @@ const updateBid = async (req, res) => {
         data: undefined,
         error: true
       });
-    }
-
-    // add "you can't bid two times in arrow!"
-
-    if (actualBid.price >= price) {
-      return res.status(400).json({
-        message: 'You cannot bid equal or less than the actual price!',
-        data: undefined,
-        error: true
-      });
-    }
+    } */
 
     const updatedBid = await Bid.findByIdAndUpdate(
       id,
