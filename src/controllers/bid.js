@@ -111,7 +111,7 @@ const createBid = async (req, res) => {
   }
 };
 
-const updateBid = async (req, res) => {
+const updateBidWinner = async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.isValidObjectId(id)) {
@@ -122,15 +122,15 @@ const updateBid = async (req, res) => {
     });
   }
 
-  const { bidWinner, price, finished, questions } = req.body;
+  const { bidWinner, price } = req.body;
 
-  /* if (!mongoose.isValidObjectId(bidWinner)) {
+  if (!mongoose.isValidObjectId(bidWinner)) {
     return res.status(400).json({
       message: 'invalid bidWinner ID',
       data: undefined,
       error: true
     });
-  } */
+  }
 
   try {
     const actualBid = await Bid.findById(id);
@@ -153,7 +153,7 @@ const updateBid = async (req, res) => {
       });
     }
 
-    if (bidWinner === actualBid.bidOwner) {
+    if (bidWinner == actualBid.bidOwner) {
       return res.status(400).json({
         message: `You cannot bid in your own bid!`,
         data: undefined,
@@ -161,17 +161,13 @@ const updateBid = async (req, res) => {
       });
     }
 
-    // add "you can't bid two times in arrow!"
-    /* console.log('bidWinner', bidWinner);
-    console.log('actualBid.bidWinner', actualBid.bidWinner);
-
-    if (actualBid.bidWinner === bidWinner) {
+    if (actualBid.bidWinner == bidWinner) {
       return res.status(400).json({
         message: 'you cannot bid two times in arrow!',
         data: undefined,
         error: false
       });
-    } */
+    }
 
     if (actualBid.price >= price) {
       return res.status(400).json({
@@ -181,32 +177,11 @@ const updateBid = async (req, res) => {
       });
     }
 
-    /* const bidProperties = Object.keys(actualBid.toObject()).slice(1, -1);
-    let changes = false;
-    bidProperties.forEach((property) => {
-      if (
-        req.body[property] &&
-        req.body[property].toString().toLowerCase() !== actualBid[property].toString()
-      ) {
-        changes = true;
-      }
-    });
-
-    if (!changes) {
-      return res.status(400).json({
-        message: 'There were no changes',
-        data: undefined,
-        error: true
-      });
-    } */
-
     const updatedBid = await Bid.findByIdAndUpdate(
       id,
       {
         bidWinner,
-        price,
-        finished,
-        questions
+        price
       },
       { new: true }
     );
@@ -223,6 +198,14 @@ const updateBid = async (req, res) => {
       error: true
     });
   }
+};
+
+const updateBidStatus = async (req, res) => {
+  return res.status(200).json({
+    message: 'Bid closed',
+    data: undefined,
+    error: false
+  });
 };
 
 const deleteBid = async (req, res) => {
@@ -267,7 +250,8 @@ const bidController = {
   getAllBids,
   getBidById,
   createBid,
-  updateBid,
+  updateBidWinner,
+  updateBidStatus,
   deleteBid
 };
 

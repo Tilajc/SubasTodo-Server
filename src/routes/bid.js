@@ -6,7 +6,8 @@ router
   .get('/', bidController.getAllBids)
   .get('/:id', bidController.getBidById)
   .post('/', bidController.createBid)
-  .put('/:id', bidController.updateBid)
+  .put('/winner/:id', bidController.updateBidWinner)
+  .put('/status/:id', bidController.updateBidStatus)
   .delete('/:id', bidController.deleteBid);
 
 export default router;
