@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { addDays } from 'date-fns';
+import { addDays, isBefore } from 'date-fns';
 import Bid from '../models/Bid';
 import User from '../models/User';
 
@@ -126,7 +126,7 @@ const updateBidWinner = async (req, res) => {
 
   if (!mongoose.isValidObjectId(bidWinner)) {
     return res.status(400).json({
-      message: 'invalid bidWinner ID',
+      message: 'Invalid bidWinner ID',
       data: undefined,
       error: true
     });
@@ -163,7 +163,7 @@ const updateBidWinner = async (req, res) => {
 
     if (actualBid.bidWinner == bidWinner) {
       return res.status(400).json({
-        message: 'you cannot bid two times in arrow!',
+        message: 'You cannot bid two times in arrow!',
         data: undefined,
         error: false
       });
@@ -201,11 +201,56 @@ const updateBidWinner = async (req, res) => {
 };
 
 const updateBidStatus = async (req, res) => {
-  return res.status(200).json({
-    message: 'Bid closed',
-    data: undefined,
-    error: false
-  });
+  const { id } = req.params;
+
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).json({
+      message: 'Invalid ID',
+      data: undefined,
+      error: true
+    });
+  }
+  try {
+    const actualBid = await Bid.findById(id);
+
+    if (!actualBid) {
+      return res.status(404).json({
+        message: "Couldn't find the bid ID",
+        data: undefined,
+        error: true
+      });
+    }
+
+    const today = new Date();
+
+    if (isBefore(today, actualBid.expirationDate)) {
+      return res.status(200).json({
+        message: 'Bid still open',
+        data: actualBid,
+        error: false
+      });
+    }
+
+    const updatedBid = await Bid.findByIdAndUpdate(
+      id,
+      {
+        finished: true
+      },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      message: 'Bid closed',
+      data: updatedBid,
+      error: false
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: `An error ocurred: ${error}`,
+      data: undefined,
+      error: true
+    });
+  }
 };
 
 const deleteBid = async (req, res) => {
