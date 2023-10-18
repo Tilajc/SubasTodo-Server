@@ -1,51 +1,74 @@
 import Joi from 'joi';
 
-const RGXEmail = /^[^@]+@[^@]+\.[a-zA-Z\s]{2,}$/;
-const RGXPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+ const Joi = require('joi');
+ const Question = require('../models/question');
 
-const questionValidateCreation = (req, res, next) => {
-    const userCreation = Joi.object({
-        comment: Joi.string()
-        .min(3)
-        .max(25)
-        .pattern(/^[A-Za-z\s]+$/)
-        .required()
-        .messages({
-          'string.pattern.base': 'First name must contain letters only',
-          'string.min': 'First name can´t be shorter than 3 characters',
-          'string.max': 'First name can´t be longer than 25 characters',
-          'string.empty': 'First name can´t be empty'
-        }),
-      user: Joi.string()
-        .min(3)
-        .max(25)
-        .pattern(/^[A-Za-z\s]+$/)
-        .required()
-        .messages({
-          'string.pattern.base': 'First name must contain letters only',
-          'string.min': 'First name can´t be shorter than 3 characters',
-          'string.max': 'First name can´t be longer than 25 characters',
-          'string.empty': 'First name can´t be empty'
-        }),
-      bid: Joi.string()
-        .regex(/^[0-9]*$/)
-        .min(7)
-        .max(9)
-        .required()
-        .messages({
-          'string.min': 'DNI must have 7-9 digits',
-          'string.max': 'DNI must have 7-9 digits',
-          'string.empty': 'DNI can´t be empty',
-          'string.pattern.base': 'DNI must be only numbers'
-        }),
-     });
+ const validateQuestion = (data) => {
+   const schema = Joi.object({
+     comment: Joi.string().required(),
+     bid: Joi.string().pattern(/^[0-9]+$/).max(100).required(), // Regex for only digits, max length 100
+     user: Joi.string().pattern(/^[a-zA-Z\s]+$/).max(100).required(), // Regex for letters and spaces, max length 100
+   });
+
+   return schema.validate(data);
  };
 
- const validationResult = questionCreation.validate(req.body);
+ const createQuestion = async (req, res) => {
+   try {
+     const { comment, bid, user } = req.body;
+
+     // Validate request data against the schema
+     const { error } = validateQuestion({ comment, bid, user });
+     if (error) {
+       return res.status(400).json({ message: error.details[0].message });
+     }
+
+     // Create a new question
+     const newQuestion = await Question.create({ comment, bid, user });
+
+     res.status(201).json({ message: 'Question created successfully', question: newQuestion });
+   } catch (error) {
+     console.error(error);
+     res.status(500).json({ message: 'Internal Server Error' });
+   }
+ };
+
+//  const updateQuestion = async (req, res) => {
+//    try {
+//      const { id } = req.params;
+//      const { comment, bid, user } = req.body;
+
+//      // Validate request data against the schema
+//      const { error } = validateQuestion({ comment, bid, user });
+//      if (error) {
+//        return res.status(400).json({ message: error.details[0].message });
+//      }
+
+//      // Find and update the question in the database
+//      const updatedQuestion = await Question.findByIdAndUpdate(
+//        id,
+//        { comment, bid, user },
+//        { new: true } // Return the updated document
+//      );
+
+//      if (!updatedQuestion) {
+//        return res.status(404).json({ message: 'Question not found' });
+//      }
+
+//      res.status(200).json({ message: 'Question updated successfully', question: updatedQuestion });
+//    } catch (error) {
+//      console.error(error);
+//      res.status(500).json({ message: 'Internal Server Error' });
+//    }
+//  };
+
+ module.exports = { createQuestion, updateQuestion };
+
+ //const validationResult = questionCreation.validate(req.body);
 
  const validations = {
-    questionValidateCreation,
-    //userValidateUpdate
+    createQuestion,
+    //updateQuestion
   };
 
   export default validations;
