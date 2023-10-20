@@ -1,21 +1,19 @@
 import mongoose, { Schema } from 'mongoose';
 
-const questionSchema = new Schema ({
-
-comment: {
+const questionSchema = new Schema({
+  comment: {
     type: String,
-    required: true,
+    required: true
   },
-bid: {
+  bid: {
     type: String, //type: Schema.Types.ObjectId, ref: 'Bid',
-    required: true,
+    required: true
   },
-user: {
+  user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
-  },
+    required: true
+  }
 });
 
 export default mongoose.model('Questions', questionSchema);
-

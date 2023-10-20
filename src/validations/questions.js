@@ -1,37 +1,42 @@
 import Joi from 'joi';
 
- const Joi = require('joi');
- const Question = require('../models/question');
+const Question = require('../models/question');
 
- const validateQuestion = (data) => {
-   const schema = Joi.object({
-     comment: Joi.string().required(),
-     bid: Joi.string().pattern(/^[0-9]+$/).max(100).required(), // Regex for only digits, max length 100
-     user: Joi.string().pattern(/^[a-zA-Z\s]+$/).max(100).required(), // Regex for letters and spaces, max length 100
-   });
+const validateQuestion = (data) => {
+  const schema = Joi.object({
+    comment: Joi.string().required(),
+    bid: Joi.string()
+      .pattern(/^[0-9]+$/)
+      .max(100)
+      .required(), // Regex for only digits, max length 100
+    user: Joi.string()
+      .pattern(/^[a-zA-Z\s]+$/)
+      .max(100)
+      .required() // Regex for letters and spaces, max length 100
+  });
 
-   return schema.validate(data);
- };
+  return schema.validate(data);
+};
 
- const createQuestion = async (req, res) => {
-   try {
-     const { comment, bid, user } = req.body;
+const createQuestion = async (req, res) => {
+  try {
+    const { comment, bid, user } = req.body;
 
-     // Validate request data against the schema
-     const { error } = validateQuestion({ comment, bid, user });
-     if (error) {
-       return res.status(400).json({ message: error.details[0].message });
-     }
+    // Validate request data against the schema
+    const { error } = validateQuestion({ comment, bid, user });
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
 
-     // Create a new question
-     const newQuestion = await Question.create({ comment, bid, user });
+    // Create a new question
+    const newQuestion = await Question.create({ comment, bid, user });
 
-     res.status(201).json({ message: 'Question created successfully', question: newQuestion });
-   } catch (error) {
-     console.error(error);
-     res.status(500).json({ message: 'Internal Server Error' });
-   }
- };
+    res.status(201).json({ message: 'Question created successfully', question: newQuestion });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
 
 //  const updateQuestion = async (req, res) => {
 //    try {
@@ -62,13 +67,13 @@ import Joi from 'joi';
 //    }
 //  };
 
- module.exports = { createQuestion, updateQuestion };
+module.exports = { createQuestion /*updateQuestion*/ };
 
- //const validationResult = questionCreation.validate(req.body);
+//const validationResult = questionCreation.validate(req.body);
 
- const validations = {
-    createQuestion,
-    //updateQuestion
-  };
+const validations = {
+  createQuestion
+  //updateQuestion
+};
 
-  export default validations;
+export default validations;
