@@ -111,6 +111,71 @@ const createBid = async (req, res) => {
   }
 };
 
+const updateBid = async (req, res) => {
+  const { id } = req.params;
+  const { product, price, timeLimit } = req.body;
+
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).json({
+      message: 'invalid ID',
+      data: undefined,
+      error: true
+    });
+  }
+
+  try {
+    const actualBid = await Bid.findById(id);
+    if (!actualBid) {
+      return res.status(404).json({
+        message: "couldn't find the bid ID",
+        data: undefined,
+        error: true
+      });
+    }
+
+    if (actualBid.bidWinner !== undefined) {
+      return res.status(400).json({
+        message: 'you cannot modify the bid if someone bid in it',
+        data: undefined,
+        error: true
+      });
+    }
+
+    if (timeLimit < 2 || timeLimit > 30) {
+      return res.status(400).json({
+        message: 'The time limit of a bid must be between two days and thirty days',
+        data: undefined,
+        error: true
+      });
+    }
+
+    const expirationDate = addDays(actualBid.startDate, timeLimit);
+
+    const updatedBid = await Bid.findByIdAndUpdate(
+      id,
+      {
+        product,
+        price,
+        timeLimit,
+        expirationDate
+      },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      message: 'Bid updated correctly',
+      data: updatedBid,
+      error: true
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: `An error ocurred: ${error}`,
+      data: undefined,
+      error: true
+    });
+  }
+};
+
 const updateBidWinner = async (req, res) => {
   const { id } = req.params;
 
@@ -295,6 +360,7 @@ const bidController = {
   getAllBids,
   getBidById,
   createBid,
+  updateBid,
   updateBidWinner,
   updateBidStatus,
   deleteBid

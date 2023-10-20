@@ -3,7 +3,7 @@ import mongoose, { Schema } from 'mongoose';
 const bidSchema = new Schema({
   bidOwner: { type: Schema.Types.ObjectId, ref: 'User' },
   product: {
-    name: { type: String, required: true },
+    title: { type: String, required: true },
     description: { type: String, required: true },
     photo: { type: String, required: true }
   },
