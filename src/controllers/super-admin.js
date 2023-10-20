@@ -5,7 +5,7 @@ const getAllSuperAdmins = async (req, res) => {
   try {
     const findsuperAdmins = await SuperAdmin.find();
     return res.status(200).json({
-      message: 'List of users',
+      message: 'List of super admins',
       data: findsuperAdmins,
       error: false
     });
@@ -49,7 +49,7 @@ const getSuperAdminsById = async (req, res) => {
     }
   }
 };
-const createSuperAdmin = async (req, res) => {
+const createSuperAdmins = async (req, res) => {
   const { email, password } = req.body;
   const tEmail = email.trim();
   const tPassword = password.trim();
@@ -86,7 +86,6 @@ const updateSuperAdmins = async (req, res) => {
     const { id } = req.params;
     const { email, password } = req.body;
 
-    const tEmail = email.trim();
     const tPassword = password.trim();
 
     if (!mongoose.isValidObjectId(id)) {
@@ -144,7 +143,6 @@ const updateSuperAdmins = async (req, res) => {
     const updatedSuperAdmin = await SuperAdmin.findByIdAndUpdate(
       id,
       {
-        email: tEmail,
         password: tPassword
       },
       { new: true }
@@ -157,7 +155,7 @@ const updateSuperAdmins = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      message: 'An error occurred',
+      message: `An error ocurred: ${error}`,
       data: undefined,
       error: true
     });
@@ -198,7 +196,7 @@ const deleteSuperAdmins = async (req, res) => {
 const superAdminController = {
   getAllSuperAdmins,
   getSuperAdminsById,
-  createSuperAdmin,
+  createSuperAdmins,
   updateSuperAdmins,
   deleteSuperAdmins
 };
