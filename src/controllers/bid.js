@@ -1,11 +1,15 @@
 import mongoose from 'mongoose';
-import { addDays, isBefore } from 'date-fns';
+import { addDays } from 'date-fns';
 import Bid from '../models/Bid';
 import User from '../models/User';
 
 const getAllBids = async (req, res) => {
   try {
-    const bidsFound = await Bid.find();
+    const bidsFound = await Bid.find().populate('bidOwner bidWinner', {
+      firstName: 1,
+      lastName: 1,
+      profilePhoto: 1
+    });
 
     return res.status(200).json({
       message: 'Bids List',
@@ -31,7 +35,13 @@ const getBidById = async (req, res) => {
       error: true
     });
   }
-  const findedBid = await Bid.findById(id);
+
+  const findedBid = await Bid.findById(id).populate('bidOwner bidWinner', {
+    firstName: 1,
+    lastName: 1,
+    profilePhoto: 1
+  });
+
   try {
     if (!findedBid) {
       return res.status(400).json({
@@ -117,7 +127,7 @@ const updateBid = async (req, res) => {
 
   if (!mongoose.isValidObjectId(id)) {
     return res.status(400).json({
-      message: 'invalid ID',
+      message: 'Invalid ID',
       data: undefined,
       error: true
     });
@@ -127,7 +137,15 @@ const updateBid = async (req, res) => {
     const actualBid = await Bid.findById(id);
     if (!actualBid) {
       return res.status(404).json({
-        message: "couldn't find the bid ID",
+        message: "Couldn't find the bid ID",
+        data: undefined,
+        error: true
+      });
+    }
+
+    if (actualBid.finished) {
+      return res.status(400).json({
+        message: 'The bid is closed!',
         data: undefined,
         error: true
       });
@@ -135,7 +153,7 @@ const updateBid = async (req, res) => {
 
     if (actualBid.bidWinner !== undefined) {
       return res.status(400).json({
-        message: 'you cannot modify the bid if someone bid in it',
+        message: 'You cannot modify the bid if someone bid in it',
         data: undefined,
         error: true
       });
@@ -208,6 +226,14 @@ const updateBidWinner = async (req, res) => {
       });
     }
 
+    if (actualBid.finished) {
+      return res.status(400).json({
+        message: 'The bid is closed!',
+        data: undefined,
+        error: true
+      });
+    }
+
     const validWinner = await User.findById(bidWinner);
 
     if (!validWinner) {
@@ -266,46 +292,20 @@ const updateBidWinner = async (req, res) => {
 };
 
 const updateBidStatus = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.isValidObjectId(id)) {
-    return res.status(400).json({
-      message: 'Invalid ID',
-      data: undefined,
-      error: true
-    });
-  }
   try {
-    const actualBid = await Bid.findById(id);
-
-    if (!actualBid) {
-      return res.status(404).json({
-        message: "Couldn't find the bid ID",
-        data: undefined,
-        error: true
-      });
-    }
-
     const today = new Date();
 
-    if (isBefore(today, actualBid.expirationDate)) {
-      return res.status(200).json({
-        message: 'Bid still open',
-        data: actualBid,
-        error: false
-      });
-    }
-
-    const updatedBid = await Bid.findByIdAndUpdate(
-      id,
+    const updatedBid = await Bid.updateMany(
+      {
+        $or: [{ expirationDate: { $lt: today } }]
+      },
       {
         finished: true
-      },
-      { new: true }
+      }
     );
 
     return res.status(200).json({
-      message: 'Bid closed',
+      message: 'Closed older bids',
       data: updatedBid,
       error: false
     });
