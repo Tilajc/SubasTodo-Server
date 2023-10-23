@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-const Question = require('../models/question');
+const Question = require('../models/Question');
 
 const validateQuestion = (data) => {
   const schema = Joi.object({
@@ -66,8 +66,6 @@ const createQuestion = async (req, res) => {
 //      res.status(500).json({ message: 'Internal Server Error' });
 //    }
 //  };
-
-module.exports = { createQuestion /*updateQuestion*/ };
 
 //const validationResult = questionCreation.validate(req.body);
 

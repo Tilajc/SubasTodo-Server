@@ -1,9 +1,13 @@
-import Questions from '../models/Questions';
+import Questions from '../models/Question';
 import Users from '../models/Users';
 import mongoose from 'mongoose';
 const getAllQuestions = async (req, res) => {
   try {
-    const questions = await Questions.find.populate('Users');
+    const questions = await Questions.find.populate('user', {
+      firstName: 1,
+      lastName: 1,
+      profilePhoto: 1
+    });
     return res.status(200).json({
       message: 'Question found!',
       data: questions,
@@ -21,7 +25,11 @@ const getAllQuestions = async (req, res) => {
 const getQuestionById = async (req, res) => {
   try {
     const { id } = req.params;
-    const idQuestion = await Questions.findOne({ $and: [{ _id: id }] }).populate('User');
+    const idQuestion = await Questions.findOne({ $and: [{ _id: id }] }).populate('user', {
+      firstName: 1,
+      lastName: 1,
+      profilePhoto: 1
+    });
     if (!idQuestion) {
       return res.status(404).json({
         message: `Question with ID ${id} was not found`,
@@ -45,8 +53,8 @@ const getQuestionById = async (req, res) => {
 
 const createQuestion = async (req, res) => {
   try {
-    const { user, comment, bid } = req.body;
-    const UsersExist = await Users.findOne(user);
+    const { userId, comment, bid } = req.body;
+    const UsersExist = await Users.findById(userId);
     if (UsersExist === null) {
       return res.status(404).json({
         message: 'There is no user with that ID',
@@ -57,7 +65,7 @@ const createQuestion = async (req, res) => {
     const existingQuestion = await Questions.findOne({
       comment,
       bid,
-      user
+      userId
     });
     if (existingQuestion) {
       return res.status(400).json({
@@ -66,10 +74,10 @@ const createQuestion = async (req, res) => {
         error: true
       });
     }
-    const questionExist = await Questions.find(user);
+    const questionExist = await Questions.find(userId);
     if (questionExist === null) {
       return res.status(404).json({
-        message: `There is no Question with that id ${user}`,
+        message: `There is no Question with that id ${userId}`,
         data: undefined,
         error: true
       });
@@ -77,7 +85,7 @@ const createQuestion = async (req, res) => {
     const newQuestion = await Questions.create({
       comment,
       bid,
-      user
+      userId
     });
     return res.status(201).json({
       message: `Question with ID ${newQuestion.id} created!`,
