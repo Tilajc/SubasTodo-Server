@@ -8,7 +8,7 @@ router
   .get('/', bidController.getAllBids)
   .get('/:id', bidController.getBidById)
   .post('/', bidValidation.bidValidateCreation, bidController.createBid)
-  .put('/product/:id', bidController.updateBid)
+  .put('/product/:id', bidValidation.bidValidateUpdate, bidController.updateBid)
   .put('/winner/:id', bidController.updateBidWinner)
   .put('/status/', bidController.updateBidStatus)
   .delete('/:id', bidController.deleteBid);
