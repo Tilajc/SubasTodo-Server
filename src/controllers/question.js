@@ -1,21 +1,23 @@
 import Questions from '../models/Question';
-import Users from '../models/Users';
+import User from '../models/User';
+//import Bid from '../models/Bid';
+
 import mongoose from 'mongoose';
 const getAllQuestions = async (req, res) => {
   try {
-    const questions = await Questions.find.populate('user', {
+    const questions = await Questions.find().populate('user', {
       firstName: 1,
       lastName: 1,
       profilePhoto: 1
     });
     return res.status(200).json({
-      message: 'Question found!',
+      message: 'List Question',
       data: questions,
       error: false
     });
   } catch (error) {
     return res.status(500).json({
-      message: error,
+      message: `An error ocurred: ${error}`,
       data: undefined,
       error: true
     });
@@ -52,40 +54,23 @@ const getQuestionById = async (req, res) => {
 };
 
 const createQuestion = async (req, res) => {
+  const { user, comment, bid } = req.body;
+  const newComment = comment.trim();
+  const newBid = bid.trim();
+  const newUser = user.trim();
   try {
-    const { userId, comment, bid } = req.body;
-    const UsersExist = await Users.findById(userId);
-    if (UsersExist === null) {
+    const UsersExist = await User.findById(user);
+    if (!UsersExist) {
       return res.status(404).json({
         message: 'There is no user with that ID',
         data: undefined,
         error: true
       });
     }
-    const existingQuestion = await Questions.findOne({
-      comment,
-      bid,
-      userId
-    });
-    if (existingQuestion) {
-      return res.status(400).json({
-        message: 'Question is already',
-        data: undefined,
-        error: true
-      });
-    }
-    const questionExist = await Questions.find(userId);
-    if (questionExist === null) {
-      return res.status(404).json({
-        message: `There is no Question with that id ${userId}`,
-        data: undefined,
-        error: true
-      });
-    }
     const newQuestion = await Questions.create({
-      comment,
-      bid,
-      userId
+      comment: newComment,
+      bid: newBid,
+      user: newUser
     });
     return res.status(201).json({
       message: `Question with ID ${newQuestion.id} created!`,
@@ -140,43 +125,24 @@ const updateQuestion = async (req, res) => {
       });
     }
 
-    /* const questionWithExistentEmail = await Questions.findOne({
-      $and: [
-        {
-          $or: [{ email }]
-        },
-        {
-          _id: { $ne: id }
-        }
-      ]
-    });
-
-    if (questionWithExistentEmail) {
-      return res.status(400).json({
-        message: 'There is another user with that email.',
-        data: undefined,
-        error: true
-      });
-    } */
-
     const updateNewQuestion = await Questions.findByIdAndUpdate(
       id,
       {
-        newComment,
-        newUser,
-        newBid
+        comment: newComment,
+        user: newUser,
+        bid: newBid
       },
       { new: true }
     );
 
     return res.status(200).json({
-      message: `Question ${updateNewQuestion.comment} ${updateNewQuestion.user} was updated successfully!`,
+      message: `Questions was updated successfully!`,
       data: updateNewQuestion,
       error: false
     });
-  } catch {
+  } catch (error) {
     return res.status(500).json({
-      message: 'An Error ocurred',
+      message: `An error ocurred: ${error}`,
       data: undefined,
       error: true
     });
@@ -227,7 +193,6 @@ const QuestionsController = {
   deleteQuestion,
   createQuestion,
   getAllQuestions
-  //getQuestionByUser o getQuestionByComment,
 };
 
 export default QuestionsController;
