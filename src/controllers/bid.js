@@ -30,7 +30,7 @@ const getBidById = async (req, res) => {
 
   if (!mongoose.isValidObjectId(id)) {
     return res.status(400).json({
-      message: 'Invalid ID',
+      message: 'ID Invalid',
       data: undefined,
       error: true
     });
@@ -127,7 +127,7 @@ const updateBid = async (req, res) => {
 
   if (!mongoose.isValidObjectId(id)) {
     return res.status(400).json({
-      message: 'Invalid ID',
+      message: 'ID Invalid',
       data: undefined,
       error: true
     });
@@ -199,7 +199,7 @@ const updateBidWinner = async (req, res) => {
 
   if (!mongoose.isValidObjectId(id)) {
     return res.status(400).json({
-      message: 'invalid ID',
+      message: 'ID Invalid',
       data: undefined,
       error: true
     });
@@ -209,7 +209,7 @@ const updateBidWinner = async (req, res) => {
 
   if (!mongoose.isValidObjectId(bidWinner)) {
     return res.status(400).json({
-      message: 'Invalid bidWinner ID',
+      message: 'Invalid winner ID',
       data: undefined,
       error: true
     });
@@ -238,7 +238,7 @@ const updateBidWinner = async (req, res) => {
 
     if (!validWinner) {
       return res.status(404).json({
-        message: `The bidWinner with the ID: ${bidWinner} doesn't exists`,
+        message: `The winner with the ID: ${bidWinner} doesn't exists`,
         data: undefined,
         error: true
       });
@@ -323,7 +323,7 @@ const deleteBid = async (req, res) => {
 
   if (!mongoose.isValidObjectId(id)) {
     return res.status(400).json({
-      message: 'Invalid ID',
+      message: 'ID Invalid',
       data: undefined,
       error: true
     });

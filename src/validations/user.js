@@ -12,9 +12,9 @@ const userValidateCreation = (req, res, next) => {
       .required()
       .messages({
         'string.pattern.base': 'First name must contain letters only',
-        'string.min': 'First name can´t be shorter than 3 characters',
-        'string.max': 'First name can´t be longer than 25 characters',
-        'string.empty': 'First name can´t be empty'
+        'string.min': "First name can't be shorter than 3 characters",
+        'string.max': "First name can't be longer than 25 characters",
+        'string.empty': "First name can't be empty"
       }),
     lastName: Joi.string()
       .min(3)
@@ -23,9 +23,9 @@ const userValidateCreation = (req, res, next) => {
       .required()
       .messages({
         'string.pattern.base': 'First name must contain letters only',
-        'string.min': 'First name can´t be shorter than 3 characters',
-        'string.max': 'First name can´t be longer than 25 characters',
-        'string.empty': 'First name can´t be empty'
+        'string.min': "First name can't be shorter than 3 characters",
+        'string.max': "First name can't be longer than 25 characters",
+        'string.empty': "First name can't be empty"
       }),
     dni: Joi.string()
       .regex(/^[0-9]*$/)
@@ -35,7 +35,7 @@ const userValidateCreation = (req, res, next) => {
       .messages({
         'string.min': 'DNI must have 7-9 digits',
         'string.max': 'DNI must have 7-9 digits',
-        'string.empty': 'DNI can´t be empty',
+        'string.empty': "DNI can't be empty",
         'string.pattern.base': 'DNI must be only numbers'
       }),
     phone: Joi.string()
@@ -44,7 +44,7 @@ const userValidateCreation = (req, res, next) => {
       .required()
       .messages({
         'string.length': 'Phone number must have 10 digits',
-        'string.empty': 'Phone number can´t be empty',
+        'string.empty': "Phone number can't be empty",
         'string.pattern.base': 'Phone number must be only numbers'
       }),
     city: Joi.string()
@@ -53,17 +53,17 @@ const userValidateCreation = (req, res, next) => {
       .required()
       .messages({
         'string.pattern.base': 'City must contain letters and spaces only',
-        'string.empty': 'City can´t be empty',
+        'string.empty': "City can't be empty",
         'string.min': 'City must have at least 4 characters'
       }),
     email: Joi.string().regex(RGXEmail).required().messages({
-      'string.empty': 'Email can´t be empty',
+      'string.empty': "Email can't be empty",
       'string.pattern.base': 'Email must be in a valid format'
     }),
     password: Joi.string().min(8).regex(RGXPassword).required().messages({
       'string.pattern.base':
         'Password must contain at least one uppercase letter, one lowercase letter, and one digit',
-      'string.empty': 'Password can´t be empty',
+      'string.empty': "Password can't be empty",
       'string.min': 'Password must be at least 8 characters long'
     })
   });
@@ -88,9 +88,9 @@ const userValidateUpdate = (req, res, next) => {
       .pattern(/^[A-Za-z\s]+$/)
       .messages({
         'string.pattern.base': 'First name must contain letters only',
-        'string.min': 'First name can´t be shorter than 3 characters',
-        'string.max': 'First name can´t be longer than 25 characters',
-        'string.empty': 'First name can´t be empty'
+        'string.min': "First name can't be shorter than 3 characters",
+        'string.max': "First name can't be longer than 25 characters",
+        'string.empty': "First name can't be empty"
       }),
     lastName: Joi.string()
       .min(3)
@@ -98,9 +98,9 @@ const userValidateUpdate = (req, res, next) => {
       .pattern(/^[A-Za-z\s]+$/)
       .messages({
         'string.pattern.base': 'First name must contain letters only',
-        'string.min': 'First name can´t be shorter than 3 characters',
-        'string.max': 'First name can´t be longer than 25 characters',
-        'string.empty': 'First name can´t be empty'
+        'string.min': "First name can't be shorter than 3 characters",
+        'string.max': "First name can't be longer than 25 characters",
+        'string.empty': "First name can't be empty"
       }),
     dni: Joi.string()
       .regex(/^[0-9]*$/)
@@ -109,7 +109,7 @@ const userValidateUpdate = (req, res, next) => {
       .messages({
         'string.min': 'DNI must have 7-9 digits',
         'string.max': 'DNI must have 7-9 digits',
-        'string.empty': 'DNI can´t be empty',
+        'string.empty': "DNI can't be empty",
         'string.pattern.base': 'DNI must be only numbers'
       }),
     phone: Joi.string()
@@ -117,7 +117,7 @@ const userValidateUpdate = (req, res, next) => {
       .length(10)
       .messages({
         'string.length': 'Phone number must have 10 digits',
-        'string.empty': 'Phone number can´t be empty',
+        'string.empty': "Phone number can't be empty",
         'string.pattern.base': 'Phone number must be only numbers'
       }),
     city: Joi.string()
@@ -126,17 +126,17 @@ const userValidateUpdate = (req, res, next) => {
       .required()
       .messages({
         'string.pattern.base': 'City must contain letters and spaces only',
-        'string.empty': 'City can´t be empty',
+        'string.empty': "City can't be empty",
         'string.min': 'City must have at least 4 characters'
       }),
     email: Joi.string().regex(RGXEmail).required().messages({
-      'string.empty': 'Email can´t be empty',
+      'string.empty': "Email can't be empty",
       'string.pattern.base': 'Email must be in a valid format'
     }),
     password: Joi.string().min(8).regex(RGXPassword).required().messages({
       'string.pattern.base':
         'Password must contain at least one uppercase letter, one lowercase letter, and one digit',
-      'string.empty': 'Password can´t be empty',
+      'string.empty': "Password can't be empty",
       'string.min': 'Password must be at least 8 characters long'
     })
   });
