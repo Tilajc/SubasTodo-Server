@@ -135,7 +135,7 @@ const updateUser = async (req, res) => {
     if (!changes) {
       return res.status(400).json({
         message: 'There were no changes',
-        data: currentUser,
+        data: undefined,
         error: true
       });
     }
