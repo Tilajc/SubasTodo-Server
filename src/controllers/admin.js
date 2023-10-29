@@ -178,7 +178,8 @@ const updateAdmin = async (req, res) => {
 const adminControllers = {
   getAdmins,
   getAdminsById,
-  createAdmin
+  createAdmin,
+  updateAdmin
 };
 
 export default adminControllers;
