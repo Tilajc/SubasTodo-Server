@@ -75,7 +75,7 @@ const createSuperAdmins = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: 'An Error ocurred',
+      message: `An error ocurred: ${error}`,
       error
     });
   }
@@ -187,7 +187,7 @@ const deleteSuperAdmins = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: 'An error occurred',
+      message: `An error ocurred: ${error}`,
       data: undefined,
       error
     });
