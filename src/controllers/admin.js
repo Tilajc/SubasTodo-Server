@@ -21,9 +21,8 @@ const getAdmins = async (req, res) => {
 
 const getAdminsById = async (req, res) => {
   const { id } = req.params;
-  const findAdminsById = await Admin.findById(id);
 
-  if (!mongoose.isValidObjectId) {
+  if (!mongoose.isValidObjectId(id)) {
     return res.status(400).json({
       messages: 'ID invalid',
       data: undefined,
@@ -32,6 +31,14 @@ const getAdminsById = async (req, res) => {
   }
 
   try {
+    const findAdminsById = await Admin.findById(id);
+    if (!findAdminsById) {
+      return res.status(404).json({
+        messages: `Admin with id: ${id} was not found`,
+        data: undefined,
+        error: true
+      });
+    }
     return res.status(200).json({
       messages: `Admin ${findAdminsById.firstName} ${findAdminsById.lastName} was succesfully found`,
       data: findAdminsById,
@@ -74,7 +81,7 @@ const createAdmin = async (req, res) => {
     });
 
     return res.status(201).json({
-      messages: `Admin ${newAdmin.tFirstName} ${newAdmin.tLastName} was succesfully created`,
+      messages: `Admin ${tFirstName} ${tLastName} was succesfully created`,
       data: newAdmin,
       error: false
     });
@@ -95,7 +102,7 @@ const updateAdmin = async (req, res) => {
   const tEmail = email.trim();
   const tPassword = password.trim();
 
-  if (!mongoose.isValidObjectId) {
+  if (!mongoose.isValidObjectId(id)) {
     return res.status(400).json({
       messages: 'ID invalid',
       data: undefined,
@@ -163,9 +170,42 @@ const updateAdmin = async (req, res) => {
     );
 
     return res.status(200).json({
-      message: `Admin ${updateNewAdmin.tFirstName} ${updateNewAdmin.tLastName} was updated successfully!`,
+      message: `Admin ${tFirstName} ${tLastName} was updated successfully!`,
       data: updateNewAdmin,
       error: false
+    });
+  } catch (error) {
+    return res.status(500).json({
+      messages: `An error ocurred: ${error}`,
+      data: undefined,
+      error: true
+    });
+  }
+};
+
+const deleteAdmin = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).json({
+      messages: 'ID invalid',
+      data: undefined,
+      error: true
+    });
+  }
+  try {
+    const deleteAdmin = await Admin.findByIdAndDelete(id);
+    if (deleteAdmin) {
+      return res.status(200).json({
+        message: `Admin ${deleteAdmin.firstName} ${deleteAdmin.lastName} was succesfully deleted`,
+        data: deleteAdmin,
+        error: false
+      });
+    }
+    return res.status(404).json({
+      message: `Admin with id: ${id} was not found`,
+      data: undefined,
+      error: true
     });
   } catch (error) {
     return res.status(500).json({
@@ -179,7 +219,8 @@ const adminControllers = {
   getAdmins,
   getAdminsById,
   createAdmin,
-  updateAdmin
+  updateAdmin,
+  deleteAdmin
 };
 
 export default adminControllers;
