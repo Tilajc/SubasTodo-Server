@@ -5,8 +5,16 @@ const RGXPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
 const validateSuperCreation = (req, res, next) => {
   const superAdminValidation = Joi.object({
-    email: Joi.string().email(RGXEmail).required(),
-    password: Joi.string().regex(RGXPassword).required()
+    email: Joi.string().email(RGXEmail).required().messages({
+      'string.empty': "Email can't be empty",
+      'string.pattern.base': 'Email must be in a valid format'
+    }),
+    password: Joi.string().regex(RGXPassword).required().messages({
+      'string.pattern.base':
+        'Password must contain at least one uppercase letter, one lowercase letter, and one digit',
+      'string.empty': "Password can't be empty",
+      'string.min': 'Password must be at least 8 characters long'
+    })
   });
 
   const validation = superAdminValidation.validate(req.body);

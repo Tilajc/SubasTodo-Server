@@ -7,8 +7,8 @@ const router = express.Router();
 router
   .get('/', superAdminController.getAllSuperAdmins)
   .get('/:id', superAdminController.getSuperAdminsById)
-  .post('/create', superAdminController.createSuperAdmins, validations.validateSuperCreation)
-  .put('/update/:id', superAdminController.updateSuperAdmins, validations.validateSuperUpdate)
-  .delete('/delete/:id', superAdminController.deleteSuperAdmins);
+  .post('/', superAdminController.createSuperAdmins, validations.validateSuperCreation)
+  .put('/:id', superAdminController.updateSuperAdmins, validations.validateSuperUpdate)
+  .delete('/:id', superAdminController.deleteSuperAdmins);
 
 export default router;
