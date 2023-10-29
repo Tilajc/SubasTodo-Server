@@ -9,9 +9,9 @@ const getAllUsers = async (req, res) => {
       data: findUsers,
       error: false
     });
-  } catch {
+  } catch (error) {
     return res.status(500).json({
-      message: 'An Error ocurred',
+      message: `An error ocurred: ${error}`,
       data: undefined,
       error: true
     });
@@ -42,9 +42,9 @@ const getAllUsersById = async (req, res) => {
       data: undefined,
       error: true
     });
-  } catch {
+  } catch (error) {
     return res.status(500).json({
-      message: 'An Error ocurred',
+      message: `An error ocurred: ${error}`,
       data: undefined,
       error: true
     });
@@ -87,9 +87,9 @@ const createUser = async (req, res) => {
       data: newUser,
       error: false
     });
-  } catch {
+  } catch (error) {
     return res.status(500).json({
-      message: 'An Error ocurred',
+      message: `An error ocurred: ${error}`,
       data: undefined,
       error: true
     });
@@ -180,9 +180,9 @@ const updateUser = async (req, res) => {
       data: updateNewUser,
       error: false
     });
-  } catch {
+  } catch (error) {
     return res.status(500).json({
-      message: 'An Error ocurred',
+      message: `An error ocurred: ${error}`,
       data: undefined,
       error: true
     });
@@ -213,9 +213,9 @@ const deleteUser = async (req, res) => {
       data: undefined,
       error: true
     });
-  } catch {
+  } catch (error) {
     return res.status(500).json({
-      message: 'An Error ocurred',
+      message: `An error ocurred: ${error}`,
       data: undefined,
       error: true
     });
