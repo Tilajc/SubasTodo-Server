@@ -27,7 +27,7 @@ const validateQuestion = (req, res, next) => {
   });
 };
 
-const validateupdateQuestion = (req, res, next) => {
+const validateUpdateQuestion = (req, res, next) => {
   const updateQuestion = Joi.object({
     comment: Joi.string().required().min(10).max(50).messages({
       'string.min': "Comment can't be shorter than 10 characters",
@@ -55,7 +55,7 @@ const validateupdateQuestion = (req, res, next) => {
 };
 const validations = {
   validateQuestion,
-  validateupdateQuestion
+  validateUpdateQuestion
 };
 
 export default validations;

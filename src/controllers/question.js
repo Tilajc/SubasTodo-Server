@@ -25,28 +25,35 @@ const getAllQuestions = async (req, res) => {
 };
 
 const getQuestionById = async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).json({
+      message: 'ID invalid',
+      data: undefined,
+      error: true
+    });
+  }
   try {
-    const { id } = req.params;
-    const idQuestion = await Questions.findOne({ $and: [{ _id: id }] }).populate('user', {
+    const idQuestion = await Questions.findOne({ $and: [{ _id: id }] }).populate('user bid', {
       firstName: 1,
       lastName: 1,
       profilePhoto: 1
     });
     if (!idQuestion) {
       return res.status(404).json({
-        message: `Question with ID ${id} was not found`,
+        message: `Question with ID: ${id} was not found`,
         data: undefined,
         error: true
       });
     }
     return res.status(200).json({
-      message: `Question with ID ${idQuestion.id} was found!`,
+      message: `Question with ID ${id} was found!`,
       data: idQuestion,
       error: false
     });
   } catch (error) {
     return res.status(500).json({
-      message: error,
+      message: `An error ocurred ${error}`,
       data: undefined,
       error: true
     });
@@ -73,13 +80,13 @@ const createQuestion = async (req, res) => {
       user: newUser
     });
     return res.status(201).json({
-      message: `Question with ID ${newQuestion.id} created!`,
+      message: `Question created!`,
       data: newQuestion,
       error: false
     });
   } catch (error) {
     return res.status(500).json({
-      message: error,
+      message: `An error ocurred ${error}`,
       data: undefined,
       error: true
     });
@@ -104,7 +111,7 @@ const updateQuestion = async (req, res) => {
     const currentQuestion = await Questions.findById(id);
     if (!currentQuestion) {
       return res.status(404).json({
-        message: `Question with id: ${id} was not found`,
+        message: `Question with ID: ${id} was not found`,
         data: undefined,
         error: true
       });
