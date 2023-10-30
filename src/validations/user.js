@@ -5,6 +5,7 @@ const RGXPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
 const userValidateCreation = (req, res, next) => {
   const userCreation = Joi.object({
+    profilePhoto: Joi.string(),
     firstName: Joi.string()
       .min(3)
       .max(25)
@@ -82,6 +83,7 @@ const userValidateCreation = (req, res, next) => {
 
 const userValidateUpdate = (req, res, next) => {
   const userUpdate = Joi.object({
+    profilePhoto: Joi.string(),
     firstName: Joi.string()
       .min(3)
       .max(25)
