@@ -28,8 +28,16 @@ const validateSuperCreation = (req, res, next) => {
 
 const validateSuperUpdate = (req, res, next) => {
   const superValidation = Joi.object({
-    email: Joi.string().email(RGXEmail),
-    password: Joi.string().regex(RGXPassword)
+    email: Joi.string().email(RGXEmail).messages({
+      'string.empty': "Email can't be empty",
+      'string.pattern.base': 'Email must be in a valid format'
+    }),
+    password: Joi.string().regex(RGXPassword).messages({
+      'string.pattern.base':
+        'Password must contain at least one uppercase letter, one lowercase letter, and one digit',
+      'string.empty': "Password can't be empty",
+      'string.min': 'Password must be at least 8 characters long'
+    })
   });
   const validation = superValidation.validate(req.body);
   if (!validation.error) return next();
