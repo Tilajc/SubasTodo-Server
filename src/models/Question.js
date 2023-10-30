@@ -6,7 +6,8 @@ const questionSchema = new Schema({
     required: true
   },
   bid: {
-    type: String, //type: Schema.Types.ObjectId, ref: 'Bid',
+    type: Schema.Types.ObjectId,
+    ref: 'Bid',
     required: true
   },
   user: {

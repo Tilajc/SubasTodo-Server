@@ -1,11 +1,11 @@
 import Questions from '../models/Question';
 import User from '../models/User';
-//import Bid from '../models/Bid';
+import Bid from '../models/Bid';
 
 import mongoose from 'mongoose';
 const getAllQuestions = async (req, res) => {
   try {
-    const questions = await Questions.find().populate('user', {
+    const questions = await Questions.find().populate('user bid', {
       firstName: 1,
       lastName: 1,
       profilePhoto: 1
@@ -74,6 +74,14 @@ const createQuestion = async (req, res) => {
         error: true
       });
     }
+    const BidExist = await Bid.findById(bid);
+    if (!BidExist) {
+      return res.status(404).json({
+        message: 'There is no bid with that ID',
+        data: undefined,
+        error: true
+      });
+    }
     const newQuestion = await Questions.create({
       comment: newComment,
       bid: newBid,
@@ -123,7 +131,14 @@ const updateQuestion = async (req, res) => {
         changes = true;
       }
     });
-
+    const BidExist = await Bid.findById(bid);
+    if (!BidExist) {
+      return res.status(404).json({
+        message: 'There is no bid with that ID',
+        data: undefined,
+        error: true
+      });
+    }
     if (!changes) {
       return res.status(400).json({
         message: 'There were no changes',
