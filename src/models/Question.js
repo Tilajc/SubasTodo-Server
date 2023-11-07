@@ -17,4 +17,4 @@ const questionSchema = new Schema({
   }
 });
 
-export default mongoose.model('Questions', questionSchema);
+export default mongoose.model('Question', questionSchema);

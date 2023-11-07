@@ -11,6 +11,7 @@ router
   .put('/product/:id', bidValidation.bidValidateUpdate, bidController.updateBid)
   .put('/winner/:id', bidController.updateBidWinner)
   .put('/status/', bidController.updateBidStatus)
+  .put('/question/:id', bidController.updateQuestions)
   .delete('/:id', bidController.deleteBid);
 
 export default router;

@@ -2,14 +2,23 @@ import mongoose from 'mongoose';
 import { addDays } from 'date-fns';
 import Bid from '../models/Bid';
 import User from '../models/User';
+import Question from '../models/Question';
 
 const getAllBids = async (req, res) => {
   try {
-    const bidsFound = await Bid.find().populate('bidOwner bidWinner', {
-      firstName: 1,
-      lastName: 1,
-      profilePhoto: 1
-    });
+    const bidsFound = await Bid.find()
+      .populate({
+        path: 'bidOwner bidWinner',
+        select: 'firstName lastName profilePhoto'
+      })
+      .populate({
+        path: 'questions',
+        select: 'comment user',
+        populate: {
+          path: 'user',
+          select: 'firstName lastName profilePhoto'
+        }
+      });
 
     return res.status(200).json({
       message: 'Bids List',
@@ -36,13 +45,21 @@ const getBidById = async (req, res) => {
     });
   }
 
-  const findedBid = await Bid.findById(id).populate('bidOwner bidWinner', {
-    firstName: 1,
-    lastName: 1,
-    profilePhoto: 1
-  });
-
   try {
+    const findedBid = await Bid.findById(id)
+      .populate({
+        path: 'bidOwner bidWinner',
+        select: 'firstName lastName profilePhoto'
+      })
+      .populate({
+        path: 'questions',
+        select: 'comment user',
+        populate: {
+          path: 'user',
+          select: 'firstName lastName profilePhoto'
+        }
+      });
+
     if (!findedBid) {
       return res.status(400).json({
         message: `The bid with the ID: ${id} was not found`,
@@ -318,6 +335,33 @@ const updateBidStatus = async (req, res) => {
   }
 };
 
+const updateQuestions = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const questions = await Question.find({ bid: id });
+
+    const updatedBid = await Bid.findByIdAndUpdate(
+      id,
+      {
+        questions
+      },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      message: 'All questions added',
+      data: updatedBid,
+      error: false
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: `An error ocurred: ${error}`,
+      data: undefined,
+      error: true
+    });
+  }
+};
+
 const deleteBid = async (req, res) => {
   const { id } = req.params;
 
@@ -363,6 +407,7 @@ const bidController = {
   updateBid,
   updateBidWinner,
   updateBidStatus,
+  updateQuestions,
   deleteBid
 };
 
