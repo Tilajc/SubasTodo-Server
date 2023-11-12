@@ -339,6 +339,22 @@ const updateQuestions = async (req, res) => {
   const { id } = req.params;
   try {
     const questions = await Question.find({ bid: id });
+    const bid = await Bid.findById(id);
+
+    const questionsID = questions.map((question) => {
+      return question._id;
+    });
+
+    console.log(questionsID);
+    console.log(bid.questions);
+
+    if (questionsID === bid.questions) {
+      return res.status(400).json({
+        message: 'There were no changes',
+        data: undefined,
+        error: false
+      });
+    }
 
     const updatedBid = await Bid.findByIdAndUpdate(
       id,
